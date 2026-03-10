@@ -161,15 +161,16 @@ header {
 
 main {
     padding: 20px;
-    max-width: 600px;
-    margin: auto;
+    max-width: 70%;
+    margin: 0 auto auto auto;
 }
 
 @media (max-width: 600px) {
     main {
-        margin: 0 !important;      /* ← 中央寄せ解除 */
-        padding: 10px !important;  /* ← 上寄せ */
-        width: 100% !important;    /* ← 横幅いっぱい */
+        margin: 0 !important;
+        /* ← 中央寄せを解除 */
+        padding-top: 10px;
+        /* ← 上に寄せる */
     }
 }
 
@@ -186,7 +187,8 @@ main {
     border: 1px solid #ccc;
 }
 
-#addBtn {
+#addBtn,
+#fixedAddBtn {
     padding: 10px 20px;
     background: #4a90e2;
     color: white;
@@ -250,12 +252,15 @@ main {
 #copyBtn {
     margin-top: 10px;
     padding: 10px;
-    width: 100%;
+    width: 30%;
     background: #4a90e2;
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    margin-left: auto;
+    /* ← 右寄せの決め手 */
+    display: block;
 }
 
 .list-area li {
@@ -318,4 +323,40 @@ main {
 
 .variable-item {
     background-color: #ffffff !important;
+}
+
+/* 家計支出リストの入力欄を固定費と同じレイアウトにする */
+#page-expense-list .input-area {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* 項目名（コンボボックス）を固定費の入力欄と同じ高さに */
+#page-expense-list .combo input {
+    height: 40px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+/* 金額入力欄も固定費と同じ高さに */
+#itemAmount {
+    height: 40px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    flex: 1;
+}
+
+/* 項目名と金額の横幅を揃える（両方 flex:1 にする） */
+#page-expense-list .combo {
+    flex: 1;
+}
+
+/* 追加ボタンも高さを揃える */
+#addBtn {
+    height: 40px;
+    padding: 0 20px;
 }
