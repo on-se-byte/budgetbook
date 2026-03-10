@@ -360,3 +360,20 @@ main {
     height: 40px;
     padding: 0 20px;
 }
+
+.share-area {
+    margin-top: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 0px;
+    padding-bottom: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.share-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
