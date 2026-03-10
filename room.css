@@ -41,24 +41,19 @@
     overflow-y: auto;
 }
 
+@media (max-width: 600px) {
+    .content {
+        display: block !important;
+        padding-top: 10px;
+    }
+}
+
 .page {
     display: none;
 }
 
 .page.active {
     display: block;
-}
-
-/* スマホ表示のとき（幅600px以下） */
-@media (max-width: 600px) {
-
-    .content,
-    .page {
-        display: block !important;
-        /* 中央寄せを解除 */
-        padding-top: 20px;
-        /* 上に余白 */
-    }
 }
 
 /* サイドバー基本 */
@@ -168,6 +163,15 @@ main {
     padding: 20px;
     max-width: 600px;
     margin: auto;
+}
+
+@media (max-width: 600px) {
+    main {
+        margin: 0 !important;
+        /* ← 中央寄せを解除 */
+        padding-top: 10px;
+        /* ← 上に寄せる */
+    }
 }
 
 .input-area {
