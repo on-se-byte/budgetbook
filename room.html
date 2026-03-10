@@ -19,10 +19,25 @@
     <main class="content">
         <div id="page-home" class="page">ホーム画面</div>
         <div id="page-income-list" class="page">収入リスト</div>
-        <div id="page-saving-edit" class="page">貯金額編集</div>
 
 
-        <!-- 変動費タブ -->
+        <!-- 貯金額編集タブ -->
+        <div id="page-saving-edit" class="page">
+            <h2 class="page-title">貯金額編集</h2>
+            <div id="savingTab" class="tab-content">
+                <div class="input-area">
+                    <input id="savingName" type="text" placeholder="貯金項目">
+                    <input id="savingAmount" type="number" placeholder="金額">
+                    <button id="savingAddBtn">追加</button>
+                </div>
+                <div class="list-area">
+                    <ul id="savingList"></ul>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 家計支出リストタブ -->
         <div id="page-expense-list" class="page">
             <h2 class="page-title">家計支出リスト</h2>
             <div id="variableTab" class="tab-content active">
@@ -56,12 +71,12 @@
 
 
 
-        <!-- 固定費タブ -->
+        <!-- 固定費編集タブ -->
         <div id="page-fixed-edit" class="page">
             <h2 class="page-title">固定費編集</h2>
             <div id="fixedTab" class="tab-content">
                 <div class="input-area">
-                    <input id="fixedName" type="text" placeholder="固定費名">
+                    <input id="fixedName" type="text" placeholder="固定費項目">
                     <input id="fixedAmount" type="number" placeholder="金額">
                     <button id="fixedAddBtn">追加</button>
                 </div>
