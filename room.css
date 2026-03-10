@@ -1,0 +1,306 @@
+.layout {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background: #f4f6f9;
+    border-right: 1px solid #ddd;
+    padding: 20px 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.sidebar li:hover {
+    background: #e3e9f2;
+}
+
+.sidebar .section {
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: default;
+}
+
+.sidebar .child {
+    padding-left: 20px;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* サイドバー基本 */
+.sidebar {
+    width: 200px;
+    background: #f4f6f9;
+    border-right: 1px solid #ddd;
+    padding: 20px 10px;
+    transition: transform 0.3s ease;
+    transform: translateX(-220px);
+}
+
+/* ボタンはデフォルト非表示 */
+.toggle-btn {
+    display: none;
+}
+
+/* サイドバーが閉じているときだけ表示 */
+.sidebar.closed~.toggle-btn {
+    display: block;
+}
+
+/* 開いている状態（closed がないとき） */
+.sidebar:not(.closed) {
+    transform: translateX(0);
+}
+
+/* サイドバーが開いているとき（closed が無いとき） */
+.sidebar:not(.closed)~.content {
+    margin-left: 50px;
+    /* サイドバーの幅と同じ */
+}
+
+/* サイドバーが閉じているとき */
+.sidebar.closed~.content {
+    margin-left: -150;
+}
+
+/* レイアウト */
+.layout {
+    display: flex;
+    height: 100vh;
+}
+
+/* トグルボタン */
+.toggle-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    background: #f4f6f9;
+    color: #ddd;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    border: 1px solid #ddd;
+}
+
+/* スマホではデフォルトで閉じる */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        height: 100%;
+        z-index: 999;
+        left: 0;
+        top: 0;
+    }
+}
+
+.sidebar .section {
+    pointer-events: none;
+    /* ← クリック無効 */
+    cursor: default;
+    /* ← 手のカーソルを出さない */
+    opacity: 0.7;
+    /* ← 少し薄くして見出し感UP（任意） */
+}
+
+.page-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #4a90e2;
+    text-align: center;
+}
+
+
+
+/* 家計支出リスト */
+body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f2f4f7;
+}
+
+header {
+    background: #4a90e2;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.input-area input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+#addBtn {
+    padding: 10px 20px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#addBtn:hover {
+    background: #357ac8;
+}
+
+.list-area ul {
+    list-style: none;
+    padding: 0;
+}
+
+.list-area li {
+    background: white;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.total-area {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#totalAmount {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 8px;
+    transition: transform 0.2s ease;
+}
+
+#shareText {
+    width: 100%;
+    height: 180px;
+    margin-top: 20px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 6px;
+    white-space: pre-wrap;
+}
+
+#copyBtn {
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.list-area li {
+    display: flex;
+    justify-content: space-between;
+    /* ← これで左右に分かれる */
+    align-items: center;
+}
+
+.list-area li .actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-area {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.edit-area input {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#itemName {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+
+.combo {
+    position: relative;
+}
+
+.combo-list {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    width: 100%;
+    z-index: 10;
+}
+
+.combo-list .option {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.combo-list .option:hover {
+    background: #eee;
+}
+
+.fixed-item {
+    background-color: #2b29291d !important;
+}
+
+.variable-item {
+    background-color: #ffffff !important;
+}
