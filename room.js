@@ -253,9 +253,15 @@ function initVariablePage() {
     /* ------------------------------
        コピー
     ------------------------------ */
-    document.getElementById("copyBtn").onclick = () => {
-        navigator.clipboard.writeText(document.getElementById("shareText").value);
-    };
+    copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(shareText.value)
+            .then(() => {
+                copyBtn.textContent = "コピーしました！";
+                setTimeout(() => {
+                    copyBtn.textContent = "コピーする";
+                }, 1500);
+            });
+    });
 
     // 初回描画
     renderVariable();
