@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>家計簿ホーム</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f2f4f7;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a90e2;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            /* 下揃えでキレイに見える */
+        }
+
+        .field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #555;
+        }
+
+        .field select,
+        .field button {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .field button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .field button:hover {
+            background: #357ac8;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup-buttons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popup-buttons button {
+            flex: 1;
+            margin: 0 5px;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: #4a90e2;
+            color: white;
+            cursor: pointer;
+        }
+
+        .popup-buttons button:hover {
+            background: #357ac8;
+        }
+    </style>
+</head>
+
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <p id="popupMessage"></p>
+        <div class="popup-buttons">
+            <button id="popupYes">はい</button>
+            <button id="popupNo">いいえ</button>
+        </div>
+    </div>
+</div>
+
+
+<body>
+
+    <h1>家計簿ルーム作成</h1>
+
+    <div class="box">
+        <div class="row">
+            <div class="field">
+                <label>年</label>
+                <select id="yearSelect"></select>
+            </div>
+
+            <div class="field">
+                <label>月</label>
+                <select id="monthSelect"></select>
+            </div>
+
+            <div class="field">
+                <label>&nbsp;</label>
+                <button id="createBtn">新規作成</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCwnHl8gFx8ctkpJ8m_HZOw-dGkSMdIf8M",
+            authDomain: "budgetbook-202603.firebaseapp.com",
+            projectId: "budgetbook-202603",
+            storageBucket: "budgetbook-202603.firebasestorage.app",
+            messagingSenderId: "1016406574750",
+            appId: "1:1016406574750:web:c27a0b3ada3f4496a99d8f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
+    <script>
+        /* ------------------------------
+           年月の選択肢を作成
+        ------------------------------ */
+        const yearSelect = document.getElementById("yearSelect");
+        const monthSelect = document.getElementById("monthSelect");
+
+        const now = new Date();
+        const currentYear = now.getFullYear();
+
+        for (let y = currentYear - 1; y <= currentYear + 3; y++) {
+            const opt = document.createElement("option");
+            opt.value = y;
+            opt.textContent = y;
+            if (y === currentYear) opt.selected = true;
+            yearSelect.appendChild(opt);
+        }
+
+        for (let m = 1; m <= 12; m++) {
+            const opt = document.createElement("option");
+            opt.value = m.toString().padStart(2, "0");
+            opt.textContent = m;
+            if (m === now.getMonth() + 1) opt.selected = true;
+            monthSelect.appendChild(opt);
+        }
+
+        /* ------------------------------
+           新規作成ボタン
+        ------------------------------ */
+        document.getElementById("createBtn").onclick = async () => {
+            const year = yearSelect.value;
+            const month = monthSelect.value;
+
+            const roomId = `${year}-${month}`;
+            const docRef = db.collection("rooms").doc(roomId);
+            const snap = await docRef.get();
+
+            if (snap.exists) {
+                const ok = await showPopup(`${year}年${month}月のルームは既に存在します。移動しますか？`);
+                if (ok) {
+                    location.href = `../room/index.html?id=${roomId}`;
+                }
+                return;
+            }
+
+            await docRef.set({ variableItems: [] });
+            location.href = `../room/index.html?id=${roomId}`;
+        };
+
+        function showPopup(message) {
+            return new Promise((resolve) => {
+                document.getElementById("popupMessage").textContent = message;
+                const popup = document.getElementById("popup");
+                popup.style.display = "flex";
+
+                document.getElementById("popupYes").onclick = () => {
+                    popup.style.display = "none";
+                    resolve(true);
+                };
+
+                document.getElementById("popupNo").onclick = () => {
+                    popup.style.display = "none";
+                    resolve(false);
+                };
+            });
+        }
+    </script>
+
+</body>
+
+</html>
