@@ -167,10 +167,9 @@ main {
 
 @media (max-width: 600px) {
     main {
-        margin: 0 !important;
-        /* ← 中央寄せを解除 */
-        padding-top: 10px;
-        /* ← 上に寄せる */
+        margin: 0 !important;      /* ← 中央寄せ解除 */
+        padding: 10px !important;  /* ← 上寄せ */
+        width: 100% !important;    /* ← 横幅いっぱい */
     }
 }
 
