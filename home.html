@@ -202,13 +202,13 @@
             if (snap.exists) {
                 const ok = await showPopup(`${year}年${month}月のルームは既に存在します。移動しますか？`);
                 if (ok) {
-                    location.href = `../room/index.html?id=${roomId}`;
+                    location.href = `room.html?id=${roomId}`;
                 }
                 return;
             }
 
             await docRef.set({ variableItems: [] });
-            location.href = `../room/index.html?id=${roomId}`;
+            location.href = `room.html?id=${roomId}`;
         };
 
         function showPopup(message) {
