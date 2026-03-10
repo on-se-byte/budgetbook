@@ -49,6 +49,18 @@
     display: block;
 }
 
+/* スマホ表示のとき（幅600px以下） */
+@media (max-width: 600px) {
+
+    .content,
+    .page {
+        display: block !important;
+        /* 中央寄せを解除 */
+        padding-top: 20px;
+        /* 上に余白 */
+    }
+}
+
 /* サイドバー基本 */
 .sidebar {
     width: 200px;
