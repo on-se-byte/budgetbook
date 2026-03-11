@@ -484,6 +484,14 @@ function renderIncome() {
         li.dataset.index = idx;
         ikkunList.appendChild(li);
     });
+
+    const omameTotal = incomeItems.omame.reduce((sum, i) => sum + i.amount, 0);
+    document.getElementById("omameTotal").textContent = omameTotal.toLocaleString() + " 円";
+    const ikkunTotal = incomeItems.ikkun.reduce((sum, i) => sum + i.amount, 0);
+    document.getElementById("ikkunTotal").textContent = ikkunTotal.toLocaleString() + " 円";
+    const incomeTotal = omameTotal + ikkunTotal;
+    document.getElementById("incomeTotal").textContent = incomeTotal.toLocaleString() + " 円";
+
 }
 
 
