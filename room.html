@@ -14,18 +14,53 @@
             <li data-page="fixed-edit" class="child">固定費編集</li>
 
             <li class="section">貯金</li>
+            <li data-page="saving-edit" class="child">臨時貯金入力</li>
             <li data-page="saving-edit" class="child">固定貯金額編集</li>
+
+            <li class="section">資産</li>
         </ul>
     </nav>
 
     <main class="content">
-        <div id="page-home" class="page">ホーム画面</div>
+        <div id="page-home" class="page">
+            <h2 id="homeTitle" class="page-title">家計簿</h2>
+
+            <div class="pocket-row">
+                <div class="pocket-card">
+                    <h3>おまめのお小遣い</h3>
+                    <div id="omamePocket" class="money"></div>
+                    <div id="omameRatio" class="ratio"></div>
+                </div>
+
+                <div class="pocket-card">
+                    <h3>いっくんのお小遣い</h3>
+                    <div id="ikkunPocket" class="money"></div>
+                    <div id="ikkunRatio" class="ratio"></div>
+                </div>
+            </div>
+
+            <div class="summary-row">
+                <div class="summary-card">
+                    <h4>収入合計</h4>
+                    <div id="incomeTotalHome"></div>
+                </div>
+
+                <div class="summary-card">
+                    <h4>支出合計</h4>
+                    <div id="expenseTotalHome"></div>
+                </div>
+
+                <div class="summary-card">
+                    <h4>貯金合計</h4>
+                    <div id="savingTotalHome"></div>
+                </div>
+            </div>
+        </div>
 
 
         <!-- 収入入力タブ -->
         <div id="page-income-input" class="page">
             <h2 class="page-title">収入入力</h2>
-
 
             <div class="total-wrapper">
                 <section class="math-area">
@@ -113,20 +148,6 @@
         <div id="page-expense-list" class="page">
             <h2 class="page-title">変動費入力</h2>
             <div id="variableTab" class="tab-content active">
-                <section class="input-area">
-                    <div class="combo">
-                        <input type="text" id="itemName" placeholder="項目名（自由入力OK）">
-                        <div class="combo-list" id="comboList">
-                            <div class="option">ガス代</div>
-                            <div class="option">電気代</div>
-                            <div class="option">水道代</div>
-                            <div class="option">食費</div>
-                        </div>
-                    </div>
-                    <input id="itemAmount" type="number" placeholder="金額">
-                    <button id="addBtn">追加</button>
-                </section>
-
                 <div class="total-wrapper">
                     <section class="math-area">
                         <p>固定費</p>
@@ -147,6 +168,20 @@
                         <div id="totalAmount">0 円</div>
                     </section>
                 </div>
+
+                <section class="input-area">
+                    <div class="combo">
+                        <input type="text" id="itemName" placeholder="項目名（自由入力OK）">
+                        <div class="combo-list" id="comboList">
+                            <div class="option">ガス代</div>
+                            <div class="option">電気代</div>
+                            <div class="option">水道代</div>
+                            <div class="option">食費</div>
+                        </div>
+                    </div>
+                    <input id="itemAmount" type="number" placeholder="金額">
+                    <button id="addBtn">追加</button>
+                </section>
 
                 <div class="list-area">
                     <ul id="itemList"></ul>
