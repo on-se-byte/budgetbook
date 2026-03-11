@@ -8,7 +8,6 @@
 
             <li class="section">収入</li>
             <li data-page="income-input" class="child">収入入力</li>
-            <li data-page="bonus-input" class="child">ボーナス入力</li>
 
             <li class="section">支出</li>
             <li data-page="expense-list" class="child">変動費入力</li>
@@ -27,6 +26,28 @@
         <div id="page-income-input" class="page">
             <h2 class="page-title">収入入力</h2>
 
+
+            <div class="total-wrapper">
+                <section class="math-area">
+                    <p>おまめ収入</p>
+                    <div id="omameTotal">0 円</div>
+                </section>
+
+                <div class="symbol">＋</div>
+
+                <section class="math-area">
+                    <p>いっくん収入</p>
+                    <div id="ikkunTotal">0 円</div>
+                </section>
+
+                <div class="symbol">＝</div>
+
+                <section class="total-area">
+                    <p>収入合計</p>
+                    <div id="incomeTotal">0 円</div>
+                </section>
+            </div>
+
             <!-- おまめ -->
             <h3>おまめ</h3>
             <section class="input-area">
@@ -44,8 +65,6 @@
             <div class="income-area">
                 <ul id="omameIncomeList"></ul>
             </div>
-
-            <br>
 
             <!-- いっくん -->
             <h3>いっくん</h3>
@@ -128,7 +147,6 @@
                         <div id="totalAmount">0 円</div>
                     </section>
                 </div>
-
 
                 <div class="list-area">
                     <ul id="itemList"></ul>
