@@ -65,6 +65,8 @@ const roomId = params.get("id") || "default";
 
 const [year, month] = roomId.split("-");
 document.title = `${year}年${month}月家計簿`;
+document.getElementById("homeTitle").textContent = `${year}年${month}月 家計簿`;
+
 
 // ▼ 固定費テンプレート（共通）
 const fixedTemplateDoc = db.collection("households").doc("fixedTemplate");
@@ -86,6 +88,46 @@ let savingItems = {
     omame: [],
     ikkun: []
 };
+
+/* ------------------------------
+   ホーム
+------------------------------ */
+function renderHome() {
+    // ▼ 収入（おまめ・いっくん）
+    const omameIncome = incomeItems.omame.reduce((sum, i) => sum + i.amount, 0);
+    const ikkunIncome = incomeItems.ikkun.reduce((sum, i) => sum + i.amount, 0);
+    const incomeTotal = omameIncome + ikkunIncome;
+
+    // ▼ 収入比（％）
+    const omameRatio = incomeTotal > 0 ? Math.round((omameIncome / incomeTotal) * 100) : 0;
+    const ikkunRatio = incomeTotal > 0 ? Math.round((ikkunIncome / incomeTotal) * 100) : 0;
+
+    // ▼ 支出合計
+    const expenseTotal = fixedItems.reduce((sum, i) => sum + i.amount, 0) + variableItems.reduce((sum, i) => sum + i.amount, 0);
+
+    // ▼ 貯金（家計＋おまめ＋いっくん）
+    const savingTotal = [
+        ...savingItems.household,
+        ...savingItems.omame,
+        ...savingItems.ikkun
+    ].reduce((sum, i) => sum + i.amount, 0);
+
+    // ▼ お小遣い
+    const omamePocket = Math.round((incomeTotal - expenseTotal - savingTotal) * omameRatio / 100);
+    const ikkunPocket = Math.round((incomeTotal - expenseTotal - savingTotal) * ikkunRatio / 100);
+
+
+    // ▼ ホーム画面へ反映
+    document.getElementById("omamePocket").textContent = omamePocket.toLocaleString() + " 円";
+    document.getElementById("ikkunPocket").textContent = ikkunPocket.toLocaleString() + " 円";
+
+    document.getElementById("omameRatio").textContent = `収入比 ${omameRatio}%`;
+    document.getElementById("ikkunRatio").textContent = `収入比 ${ikkunRatio}%`;
+
+    document.getElementById("incomeTotalHome").textContent = incomeTotal.toLocaleString() + " 円";
+    document.getElementById("expenseTotalHome").textContent = expenseTotal.toLocaleString() + " 円";
+    document.getElementById("savingTotalHome").textContent = savingTotal.toLocaleString() + " 円";
+}
 
 /* ============================================================
    合計 & 共有テキスト & 変動費描画（どこからでも呼べるように外出し）
@@ -199,7 +241,7 @@ function renderVariable() {
 }
 
 /* ------------------------------
-   初期読み込み（固定費・変動費・貯金）
+   初期読み込み
 ------------------------------ */
 async function loadData() {
 
@@ -252,8 +294,8 @@ async function loadData() {
 
     initVariablePage();
     initFixedPage();
-    initSavingPage();   // ★ 追加
-
+    initSavingPage();
+    renderHome();
     renderVariable();
 }
 
@@ -868,12 +910,18 @@ document.querySelectorAll(".sidebar li[data-page]").forEach(item => {
     item.addEventListener("click", () => {
         const page = item.dataset.page;
 
+        /* ▼ サイドバーの選択状態を更新 */
+        document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
+        item.classList.add("active");
+
+        /* ▼ ページ切り替え */
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         const targetPage = document.getElementById(`page-${page}`);
         targetPage.classList.add("active");
 
         sidebar.classList.add("closed");
 
+        /* ▼ ページごとの初期化 */
         if (page === "income-input") {
             initIncomePage();
         }
