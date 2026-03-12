@@ -78,8 +78,9 @@
 }
 
 
-
-
+/* ============================
+   サイドバー
+============================ */
 .layout {
     display: flex;
     height: 100vh;
@@ -89,7 +90,10 @@
     width: 200px;
     background: #f4f6f9;
     border-right: 1px solid #ddd;
-    padding: 10px 10px;
+    padding: 20px 10px;
+    transition: transform 0.3s ease;
+    transform: translateX(-220px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar ul {
@@ -145,16 +149,6 @@
     display: block;
 }
 
-/* サイドバー基本 */
-.sidebar {
-    width: 200px;
-    background: #f4f6f9;
-    border-right: 1px solid #ddd;
-    padding: 20px 10px;
-    transition: transform 0.3s ease;
-    transform: translateX(-220px);
-}
-
 /* ボタンはデフォルト非表示 */
 .toggle-btn {
     display: none;
@@ -181,12 +175,6 @@
     margin-left: -150;
 }
 
-/* レイアウト */
-.layout {
-    display: flex;
-    height: 100vh;
-}
-
 /* トグルボタン */
 .toggle-btn {
     position: fixed;
@@ -200,7 +188,8 @@
     border-radius: 6px;
     cursor: pointer;
     font-size: 20px;
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* スマホではデフォルトで閉じる */
