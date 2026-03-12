@@ -83,7 +83,12 @@ let incomeItems = {
 };
 let fixedItems = [];
 let variableItems = [];
-let savingItems = {
+let savingInputItems = {
+    household: [],
+    omame: [],
+    ikkun: []
+};
+let savingEditItems = {
     household: [],
     omame: [],
     ikkun: []
@@ -107,9 +112,12 @@ function renderHome() {
 
     // ▼ 貯金（家計＋おまめ＋いっくん）
     const savingTotal = [
-        ...savingItems.household,
-        ...savingItems.omame,
-        ...savingItems.ikkun
+        ...savingInputItems.household,
+        ...savingInputItems.omame,
+        ...savingInputItems.ikkun,
+        ...savingEditItems.household,
+        ...savingEditItems.omame,
+        ...savingEditItems.ikkun
     ].reduce((sum, i) => sum + i.amount, 0);
 
     // ▼ お小遣い
@@ -133,10 +141,10 @@ function renderHome() {
    合計 & 共有テキスト & 変動費描画（どこからでも呼べるように外出し）
 ============================================================ */
 function recalcTotal() {
-    const total = [
+    // 支出
+    const expenseTotalMath = [
         ...variableItems,
         ...fixedItems,
-        // ...savingItems   // ★ 貯金も合計に含める
     ].reduce((sum, item) => sum + item.amount, 0);
 
     const fixedTotal = fixedItems.reduce((sum, i) => sum + i.amount, 0);
@@ -147,8 +155,27 @@ function recalcTotal() {
 
     const totalEl = document.getElementById("totalAmount");
     if (totalEl) {
-        totalEl.textContent = `${total.toLocaleString()} 円`;
+        totalEl.textContent = `${expenseTotalMath.toLocaleString()} 円`;
     }
+
+    // 貯金
+    const savingTotalMath = [
+        ...savingInputItems.household,
+        ...savingInputItems.omame,
+        ...savingInputItems.ikkun,
+        ...savingEditItems.household,
+        ...savingEditItems.omame,
+        ...savingEditItems.ikkun
+    ].reduce((sum, item) => sum + item.amount, 0);
+
+    const variableSavingTotal = [...savingInputItems.household, ...savingInputItems.omame, ...savingInputItems.ikkun].reduce((sum, i) => sum + i.amount, 0);
+    document.getElementById("variableSavingTotal").textContent = variableSavingTotal.toLocaleString() + " 円";
+
+    const fixedSavingTotal = [...savingEditItems.household, ...savingEditItems.omame, ...savingEditItems.ikkun].reduce((sum, i) => sum + i.amount, 0);
+    document.getElementById("fixedSavingTotal").textContent = fixedSavingTotal.toLocaleString() + " 円";
+
+    const savingTotal = document.getElementById("SavingTotal");
+    savingTotal.textContent = `${savingTotalMath.toLocaleString()} 円`;
 }
 
 function updateShareText() {
@@ -197,8 +224,8 @@ function updateShareText() {
 
     let hasSaving = false;
 
-    for (const type in savingItems) {
-        const list = savingItems[type];
+    for (const type in savingEditItems) {
+        const list = savingEditItems[type];
 
         if (list.length > 0) {
             hasSaving = true;
@@ -273,28 +300,38 @@ async function loadData() {
         await monthDoc.set({ fixedItems }, { merge: true });
     }
 
-    // ▼ 貯金（savingItems）
-    if (monthSnap.exists && monthSnap.data().savingItems) {
-        savingItems = monthSnap.data().savingItems;
+    // ▼ 臨時貯金（savingInputItems）
+    savingInputItems = monthSnap.exists && monthSnap.data().savingInputItems
+        ? monthSnap.data().savingInputItems
+        : savingInputItems = {
+            household: [],
+            omame: [],
+            ikkun: []
+        };;
+
+
+    // ▼ 固定貯金（savingEditItems）
+    if (monthSnap.exists && monthSnap.data().savingEditItems) {
+        savingEditItems = monthSnap.data().savingEditItems;
     } else {
         const savingSnap = await savingTemplateDoc.get();
-        if (savingSnap.exists && savingSnap.data().savingItems !== undefined) {
-            savingItems = savingSnap.data().savingItems;
+        if (savingSnap.exists && savingSnap.data().savingEditItems !== undefined) {
+            savingEditItems = savingSnap.data().savingEditItems;
         } else {
             // ★ 初期構造を作る
-            savingItems = {
+            savingEditItems = {
                 household: [],
                 omame: [],
                 ikkun: []
             };
         }
 
-        await monthDoc.set({ savingItems }, { merge: true });
+        await monthDoc.set({ savingEditItems }, { merge: true });
     }
 
     initVariablePage();
     initFixedPage();
-    initSavingPage();
+    initSavingEditPage();
     renderHome();
     renderVariable();
 }
@@ -486,7 +523,7 @@ if (ikkunList) {
             incomeItems.ikkun.splice(index, 1);
 
             await monthDoc.set({ incomeItems }, { merge: true });
-            renderIncome();   // ← これが正しい
+            renderIncome();
         }
     };
 }
@@ -776,18 +813,18 @@ function initFixedPage() {
 }
 
 /* ============================================================
-   貯金ページ 初期化（saving-edit）
+   臨時貯金入力ページ 初期化（saving-input）
 ============================================================ */
-function initSavingPage() {
-    if (window.savingPageInitialized) return;
-    window.savingPageInitialized = true;
+function initSavingInputPage() {
+    if (window.savingInputPageInitialized) return;
+    window.savingInputPageInitialized = true;
 
-    console.log("貯金ページ 初期化");
+    console.log("臨時貯金入力ページ 初期化");
 
-    const savingList = document.getElementById("savingList");
+    const savingInputList = document.getElementById("savingInputList");
 
     function renderSaving() {
-        savingList.innerHTML = "";
+        savingInputList.innerHTML = "";
 
         const categories = {
             household: "家計用貯金リスト",
@@ -798,11 +835,11 @@ function initSavingPage() {
         for (const key in categories) {
             const title = document.createElement("h3");
             title.textContent = categories[key];
-            savingList.appendChild(title);
+            savingInputList.appendChild(title);
 
-            savingItems[key].forEach((item, idx) => {
+            savingInputItems[key].forEach((item, idx) => {
                 const li = document.createElement("li");
-                li.classList.add("saving-item");
+                li.classList.add("saving-input-item");
                 li.dataset.category = key;
                 li.dataset.index = idx;
                 li.innerHTML = `
@@ -812,38 +849,37 @@ function initSavingPage() {
                     <button class="deleteBtn">削除</button>
                 </span>
             `;
-                savingList.appendChild(li);
+                savingInputList.appendChild(li);
             });
         }
     }
 
-    document.getElementById("savingAddBtn").onclick = async () => {
-        const name = document.getElementById("savingName").value.trim();
-        const amount = Number(document.getElementById("savingAmount").value);
+    document.getElementById("savingInputAddBtn").onclick = async () => {
+        const name = document.getElementById("savingInputName").value.trim();
+        const amount = Number(document.getElementById("savingInputAmount").value);
 
         if (!name || !amount) return;
 
-        const type = document.querySelector("input[name='savingType']:checked").value;
+        const type = document.querySelector("input[name='savingInputType']:checked").value;
 
-        savingItems[type].push({ name, amount });
+        savingInputItems[type].push({ name, amount });
 
-        await monthDoc.set({ savingItems }, { merge: true });
-        await savingTemplateDoc.set({ savingItems }, { merge: true });
+        await monthDoc.set({ savingInputItems }, { merge: true });
 
         renderSaving();
         renderVariable();
 
-        document.getElementById("savingName").value = "";
-        document.getElementById("savingAmount").value = "";
+        document.getElementById("savingInputName").value = "";
+        document.getElementById("savingInputAmount").value = "";
     };
 
-    savingList.onclick = async (e) => {
+    savingInputList.onclick = async (e) => {
         const li = e.target.closest("li");
         if (!li) return;
 
         const category = li.dataset.category;
         const index = Number(li.dataset.index);
-        const item = savingItems[category][index];
+        const item = savingInputItems[category][index];
 
         if (e.target.classList.contains("editBtn")) {
             li.innerHTML = `
@@ -864,8 +900,7 @@ function initSavingPage() {
                 item.name = nameInput.value;
                 item.amount = Number(amountInput.value);
 
-                await monthDoc.set({ savingItems }, { merge: true });
-                await savingTemplateDoc.set({ savingItems }, { merge: true });
+                await monthDoc.set({ savingInputItems }, { merge: true });
 
                 renderSaving();
                 renderVariable();
@@ -891,10 +926,137 @@ function initSavingPage() {
         }
 
         if (e.target.classList.contains("deleteBtn")) {
-            savingItems[category].splice(index, 1);
+            savingInputItems[category].splice(index, 1);
 
-            await monthDoc.set({ savingItems }, { merge: true });
-            await savingTemplateDoc.set({ savingItems }, { merge: true });
+            await monthDoc.set({ savingInputItems }, { merge: true });
+
+            renderSaving();
+            renderVariable();
+        }
+    };
+    renderSaving();
+}
+
+/* ============================================================
+   固定貯金編集ページ 初期化（saving-edit）
+============================================================ */
+function initSavingEditPage() {
+    if (window.savingEditPageInitialized) return;
+    window.savingEditPageInitialized = true;
+
+    console.log("貯金ページ 初期化");
+
+    const savingEditList = document.getElementById("savingEditList");
+
+    function renderSaving() {
+        savingEditList.innerHTML = "";
+
+        const categories = {
+            household: "家計用貯金リスト",
+            omame: "おまめ用貯金リスト",
+            ikkun: "いっくん用貯金リスト"
+        };
+
+        for (const key in categories) {
+            const title = document.createElement("h3");
+            title.textContent = categories[key];
+            savingEditList.appendChild(title);
+
+            savingEditItems[key].forEach((item, idx) => {
+                const li = document.createElement("li");
+                li.classList.add("saving-edit-item");
+                li.dataset.category = key;
+                li.dataset.index = idx;
+                li.innerHTML = `
+                <span>${item.name}：${item.amount.toLocaleString()} 円</span>
+                <span class="actions">
+                    <button class="editBtn">編集</button>
+                    <button class="deleteBtn">削除</button>
+                </span>
+            `;
+                savingEditList.appendChild(li);
+            });
+        }
+    }
+
+    document.getElementById("savingEditAddBtn").onclick = async () => {
+        const name = document.getElementById("savingEditName").value.trim();
+        const amount = Number(document.getElementById("savingEditAmount").value);
+
+        if (!name || !amount) return;
+
+        const type = document.querySelector("input[name='savingEditType']:checked").value;
+
+        savingEditItems[type].push({ name, amount });
+
+        await monthDoc.set({ savingEditItems }, { merge: true });
+        await savingTemplateDoc.set({ savingEditItems }, { merge: true });
+
+        renderSaving();
+        renderVariable();
+
+        document.getElementById("savingEditName").value = "";
+        document.getElementById("savingEditAmount").value = "";
+    };
+
+    savingEditList.onclick = async (e) => {
+        const li = e.target.closest("li");
+        if (!li) return;
+
+        const category = li.dataset.category;
+        const index = Number(li.dataset.index);
+        const item = savingEditItems[category][index];
+
+        if (e.target.classList.contains("editBtn")) {
+            li.innerHTML = `
+            <div class="edit-area">
+                <input type="text" class="editName" value="${item.name}">
+                <input type="number" class="editAmount" value="${item.amount}">
+            </div>
+        `;
+
+            const editArea = li.querySelector(".edit-area");
+            const nameInput = li.querySelector(".editName");
+            const amountInput = li.querySelector(".editAmount");
+
+            amountInput.focus();
+            amountInput.select();
+
+            const saveEdit = async () => {
+                item.name = nameInput.value;
+                item.amount = Number(amountInput.value);
+
+                await monthDoc.set({ savingEditItems }, { merge: true });
+                await savingTemplateDoc.set({ savingEditItems }, { merge: true });
+
+                renderSaving();
+                renderVariable();
+            };
+
+            // Enterキーで保存
+            nameInput.addEventListener("keydown", (ev) => {
+                if (ev.key === "Enter") saveEdit();
+            });
+            amountInput.addEventListener("keydown", (ev) => {
+                if (ev.key === "Enter") saveEdit();
+            });
+
+            // 編集エリア全体からフォーカスが外れたら保存
+            editArea.addEventListener("focusout", (ev) => {
+                // 編集エリア内の要素にフォーカスが移動した場合は保存しない
+                if (editArea.contains(ev.relatedTarget)) return;
+
+                saveEdit();
+            });
+
+            return;
+        }
+
+        if (e.target.classList.contains("deleteBtn")) {
+            savingEditItems[category].splice(index, 1);
+
+            await monthDoc.set({ savingEditItems }, { merge: true });
+            await savingTemplateDoc.set({ savingEditItems }, { merge: true });
 
             renderSaving();
             renderVariable();
@@ -922,6 +1084,10 @@ document.querySelectorAll(".sidebar li[data-page]").forEach(item => {
         sidebar.classList.add("closed");
 
         /* ▼ ページごとの初期化 */
+        if (page === "home") {
+            renderHome();
+        }
+
         if (page === "income-input") {
             initIncomePage();
         }
@@ -935,8 +1101,12 @@ document.querySelectorAll(".sidebar li[data-page]").forEach(item => {
             initFixedPage();
         }
 
+        if (page === "saving-input") {
+            initSavingInputPage();
+        }
+
         if (page === "saving-edit") {
-            initSavingPage();
+            initSavingEditPage();
         }
     });
 });
