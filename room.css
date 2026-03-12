@@ -466,15 +466,13 @@ main {
     background: #eee;
 }
 
-.fixed-item {
+.fixed-item,
+.saving-edit-item {
     background-color: #2b29291d !important;
 }
 
-.saving-item {
-    background-color: #2b29291d !important;
-}
-
-.variable-item {
+.variable-item,
+.saving-input-item {
     background-color: #ffffff !important;
 }
 
