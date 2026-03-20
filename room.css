@@ -1,0 +1,856 @@
+/* ============================
+   ホーム：お小遣いカード
+============================ */
+.pocket-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.pocket-card {
+    flex: 1;
+    background: #fff;
+    padding-top: 0;
+    padding-bottom: 14px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.pocket-card h3 {
+    font-size: 15px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.pocket-card .money {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #222;
+}
+
+.pocket-card .ratio {
+    font-size: 12px;
+    opacity: 0.6;
+    color: #555;
+}
+
+/* ============================
+   ホーム：サマリーカード
+============================ */
+.summary-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.summary-card {
+    flex: 1;
+    background: #fafafa;
+    padding-top: 0;
+    padding-bottom: 14px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+.summary-card h4 {
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #444;
+}
+
+.summary-card div {
+    font-size: 16px;
+    font-weight: bold;
+    color: #222;
+}
+
+/* ============================
+   補足テキスト
+============================ */
+.note {
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: 0.6;
+    text-align: center;
+}
+
+
+/* ============================
+   サイドバー
+============================ */
+.layout {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    position: fixed;
+    width: 200px;
+    background: #f4f6f9;
+    border-right: 1px solid #ddd;
+    padding: 20px 10px;
+    transition: transform 0.3s ease;
+    transform: translateX(-220px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    /* サイドバー内だけスクロール可能に */
+    z-index: 1000;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.sidebar li:hover {
+    background: #e3e9f2;
+}
+
+.sidebar .section {
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: default;
+}
+
+.sidebar .child {
+    padding-left: 20px;
+}
+
+.sidebar li.active {
+    background: #e0f3ff;
+    font-weight: bold;
+}
+
+
+/* ============================
+   貯金使用
+============================ */
+.use-form select,
+.use-form input[type="number"] {
+    height: 40px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+    flex: 1;
+    /* ← 横幅を均等に広げる */
+    min-width: 140px;
+}
+
+.use-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.use-form select {
+    min-width: 140px;
+}
+
+/* ▼ 貯金使用リストだけ独立レイアウトにする */
+#usingList {
+    display: block !important;
+    width: 100%;
+}
+
+/* ▼ li を flex から隔離する（これが決定打） */
+#usingList>li {
+    display: block !important;
+    width: auto;
+    padding: 8px;
+    margin: 0 0 10px 30px;
+}
+
+/* ▼ カード本体 */
+.using-item {
+    display: block;
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ▼ 1行目（カテゴリ＋口座＋日付） */
+.using-line1 {
+    display: block;
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 4px;
+    white-space: normal;
+}
+
+/* ▼ 2行目（項目＋金額＋削除） */
+.using-line2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* ▼ 金額テキストは左寄せ */
+.using-maintext {
+    flex: 1;
+    text-align: left;
+}
+
+/* 1番目のプルダウン（カテゴリ）を短く */
+#useCategory {
+    flex: 0.6;
+}
+
+/* 2番目のプルダウン（項目）を長く */
+#useItem {
+    flex: 1.6;
+}
+
+/* 金額入力欄は普通の長さでOK */
+#useAmount {
+    flex: 0.8;
+}
+
+
+/* 貯金入力ページの見出し（h3） */
+#savingInputList h3,
+#ikkunIncomeList h3,
+#usingList h3,
+#savingEditList h3,
+#assetList h3 {
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+#savingInputList h4,
+#savingEditList h4,
+#assetList h4 {
+    margin-top: 1px;
+    /* ← h3 との間を詰める */
+    margin-bottom: 4px;
+}
+
+
+
+
+
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+    .content {
+        display: block !important;
+        padding-top: 10px;
+    }
+}
+
+.page {
+    margin-left: 180px;
+    transition: margin-left 0.3s ease;
+    display: none;
+}
+
+.page li {
+    font-size: 14px;
+}
+
+#page-income-input h3 {
+    font-size: 16px !important;
+    margin-top: 30px;
+    margin-bottom: -5px;
+}
+
+.page.active {
+    display: block;
+}
+
+/* ボタンはデフォルト非表示 */
+.toggle-btn {
+    display: none;
+}
+
+/* サイドバーが閉じているときだけ表示 */
+.sidebar.closed~.toggle-btn {
+    display: block;
+}
+
+/* 開いている状態（closed がないとき） */
+.sidebar:not(.closed) {
+    transform: translateX(0);
+}
+
+/* サイドバーが開いているとき（closed が無いとき） */
+.sidebar:not(.closed)~.content {
+    margin-left: 40px;
+    /* サイドバーの幅と同じ */
+}
+
+/* サイドバーが閉じているとき */
+.sidebar.closed~.content {
+    margin-left: -140;
+}
+
+/* トグルボタン */
+.toggle-btn {
+    position: fixed;
+    top: 15px;
+    left: 10px;
+    z-index: 1000;
+    background: #f4f6f9;
+    color: #ddd;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    border: 2px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* スマホではデフォルトで閉じる */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        height: 100%;
+        z-index: 999;
+        left: 0;
+        top: 0;
+    }
+}
+
+.sidebar .section {
+    pointer-events: none;
+    /* ← クリック無効 */
+    cursor: default;
+    /* ← 手のカーソルを出さない */
+    opacity: 0.7;
+    /* ← 少し薄くして見出し感UP（任意） */
+}
+
+.page-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #4a90e2;
+    text-align: center;
+}
+
+
+
+/* 家計支出リスト */
+body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f2f4f7;
+}
+
+header {
+    background: #4a90e2;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+    max-width: 85%;
+    margin: 0 auto auto auto;
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 600px) {
+    main {
+        margin: 0 !important;
+        /* ← 中央寄せを解除 */
+        padding-top: 10px;
+        /* ← 上に寄せる */
+    }
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.input-area input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.input-area .combo {
+    flex: 1;
+    /* ← 給料のコンボボックス */
+}
+
+/* 項目名（コンボボックス）を固定費の入力欄と同じ高さに */
+.combo input {
+    height: 40px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+
+
+.addBtn {
+    padding: 10px 20px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#closeMonthBtn {
+    padding: 10px 20px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-left: auto;
+    display: block;
+}
+
+.addBtn:hover {
+    background: #357ac8;
+}
+
+#closeMonthBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.list-area ul {
+    list-style: none;
+    padding: 0;
+    font-size: 14px;
+}
+
+.list-area li {
+    background: white;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.part-list-area ul {
+    list-style: none;
+    padding: 0;
+    font-size: 14px;
+}
+
+.part-list-area li {
+    background: white;
+    padding: 8px;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.total-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: -15px 0 10px 0;
+}
+
+.math-area {
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    width: 110px;
+}
+
+.math-area p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.math-area div {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.total-area {
+    background: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    width: 110px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.total-area p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.total-area div {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.symbol {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 0 4px;
+    margin: 40px 20px;
+}
+
+#shareText {
+    width: 100%;
+    height: 180px;
+    margin-top: 10px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 6px;
+    white-space: pre-wrap;
+}
+
+#copyBtn {
+    margin-top: 10px;
+    padding: 10px;
+    width: 30%;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: auto;
+    /* ← 右寄せの決め手 */
+    display: block;
+}
+
+.list-area li .actions {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-area {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.edit-area input {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#itemName {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+
+.combo {
+    position: relative;
+}
+
+.combo-list {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.combo-list .option {
+    padding: 8px;
+    cursor: pointer;
+    text-align: left;
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+.combo-list .option:hover {
+    background: #eee;
+}
+
+.fixed-item,
+.saving-edit-item {
+    background-color: #2b29291d !important;
+}
+
+.variable-item,
+.saving-input-item,
+.asset-select-item {
+    background-color: #ffffff !important;
+}
+
+/* 追加ボタンも高さを揃える */
+#addBtn {
+    height: 40px;
+    padding: 0 20px;
+}
+
+.shareH3 {
+    margin-bottom: 0;
+    margin-top: 50px;
+}
+
+.income-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.income-type {
+    display: flex;
+    gap: 15px;
+}
+
+/* ============================
+   総資産確認
+============================ */
+/* ▼ memo行 */
+.memo-line {
+
+    font-size: 13px;
+    color: #777;
+    margin-left: 15px;
+
+}
+
+.asset-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.editing {
+    display: block; /* ← flex を解除して1カラムにする */
+    width: auto;    /* ← li 全体を編集フォームにする */
+}
+
+.editing .edit-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+
+.editing .editAmount {
+    flex: 0 0 20%;  /* ← 金額は20% */
+}
+
+.editing .editMemo {
+    flex: 0 0 60%;  /* ← メモは70%（ここがポイント） */
+}
+
+
+
+/* ============================
+   エラー
+============================ */
+.error-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.error-popup-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.error-popup-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #4a90e2;
+    color: white;
+    cursor: pointer;
+}
+
+.error-popup-buttons button:hover {
+    background: #357ac8;
+}
+
+#errorPopupMessage {
+    white-space: pre-line;
+}
+
+
+/* ============================
+   確認
+============================ */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.popup-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.popup-buttons button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #4a90e2;
+    color: white;
+    cursor: pointer;
+}
+
+#transferCancel,
+#popupNo {
+    background: white;
+    color: #4a90e2;
+    border: 1px solid #4a90e2;
+}
+
+#transferCancel:hover,
+#popupNo:hover {
+    background: #f2f6fc;
+}
+
+
+.popup-buttons button:hover {
+    background: #357ac8;
+}
+
+#popupMessage {
+    white-space: pre-line;
+}
+
+/* ============================
+   振替
+============================ */
+#transferPopup select,
+#transferPopup input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.transfer-display {
+    font-size: 14px;
+    /* ← フォントサイズ */
+    text-align: left;
+    /* ← 左寄せ */
+    margin-bottom: 6px;
+    /* ← 下に余白 */
+    line-height: 1.4;
+    /* ← 行間 */
+    white-space: pre-line;
+    /* ← 改行を反映 */
+}
+
+.transInputArea {
+    margin-top: -10px;
+    margin-left: 15px;
+    width: 90%;
+}
+
+
+/* ============================
+   ラジオボタン
+============================ */
+.radio-button {
+    font-size: 14px;
+}
+
+.radio-button p {
+    margin: 10px 0 5px 0;
+    /* タイトルだけ少し下に余白 */
+}
